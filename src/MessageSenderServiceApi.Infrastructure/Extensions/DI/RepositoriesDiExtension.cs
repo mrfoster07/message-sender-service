@@ -1,4 +1,6 @@
-﻿using Microsoft.Extensions.DependencyInjection;
+﻿using MessageSenderServiceApi.Domain.Modules.Notification;
+using MessageSenderServiceApi.Infrastructure.Data.Repositories;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace MessageSenderServiceApi.Infrastructure.Extensions.DI
 {
@@ -6,6 +8,9 @@ namespace MessageSenderServiceApi.Infrastructure.Extensions.DI
     {
         public static IServiceCollection AddRepositories(this IServiceCollection serviceCollection)
         {
+            serviceCollection.AddScoped<INotificationRepository, NotificationRepository>();
+            serviceCollection.AddTransient<INotificationDumpRepository, NotificationDumpRepository>();
+
             return serviceCollection;
         }
     }

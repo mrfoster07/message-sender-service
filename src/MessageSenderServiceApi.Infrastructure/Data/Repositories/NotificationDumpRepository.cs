@@ -10,30 +10,25 @@ using Microsoft.EntityFrameworkCore;
 
 namespace MessageSenderServiceApi.Infrastructure.Data.Repositories
 {
-    public class NotificationRepository : INotificationRepository
+    public class NotificationDumpRepository : INotificationDumpRepository
     {
         private readonly NotificationDataContext dataContext;
 
-        public NotificationRepository(NotificationDataContext dataContext)
+        public NotificationDumpRepository(NotificationDataContext dataContext)
         {
             this.dataContext = dataContext;
         }
 
-        public async Task Add((Guid id, string json, string jsonHash, bool status) item,
+        public async Task AddRange((Guid id, string json, string jsonHash, bool status)[] items,
             CancellationToken cancellationToken)
         {
-            await dataContext.Notifications.AddAsync(new NotificationEntity
-                    { Id = item.id, IsDelivered = item.status, Json = item.json, JsonHash = item.jsonHash },
+            await dataContext.Notifications.AddRangeAsync(
+                items.Select(s => new NotificationEntity
+                    { Id = s.id, IsDelivered = s.status, Json = s.json, JsonHash = s.jsonHash }),
                 cancellationToken
             );
 
             await dataContext.SaveChangesAsync(cancellationToken);
-        }
-
-        public async Task<bool> IsStatus(Guid id, bool status, CancellationToken cancellationToken)
-        {
-            return await dataContext.Notifications
-                .CountAsync(s => s.Id == id && s.IsDelivered == status, cancellationToken) > 0;
         }
     }
 }

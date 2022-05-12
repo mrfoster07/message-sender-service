@@ -9,6 +9,12 @@
   <ItemGroup>
     <ProjectReference Include="..\MessageSenderServiceApi.Contracts\MessageSenderServiceApi.Contracts.csproj" />
     <ProjectReference Include="..\MessageSenderServiceApi.Packages\MessageSenderServiceApi.Packages.csproj" />
+    <ProjectReference Include="..\NotificationSenders\NotificationSender.AndroidProvider\NotificationSender.AndroidProvider.csproj" />
+    <ProjectReference Include="..\NotificationSenders\NotificationSender.IosProvider\NotificationSender.IosProvider.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Helpers\" />
   </ItemGroup>
 
 </Project>

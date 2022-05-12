@@ -1,6 +1,7 @@
 using MessageSenderServiceApi.Domain.Modules.Notification.Extensions;
 using MessageSenderServiceApi.Infrastructure.Extensions;
 using MessageSenderServiceApi.Infrastructure.Extensions.DI;
+using MessageSenderServiceApi.Middleware;
 using Serilog;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -14,15 +15,21 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddHealthChecks();
 builder.Services.AddSwaggerGen();
 
-builder.Host.UseSerilog(
-    (ctx, lc) => lc
-        .WriteTo.Console());
+Log.Logger = new LoggerConfiguration()
+    .ReadFrom.Configuration(builder.Configuration)
+    .CreateLogger();
+
+builder.Host.UseSerilog();
+
+//builder.Host.UseSerilog(
+//    (ctx, lc) => lc
+//        .WriteTo.Console());
 
 //Domain
 builder.Services.AddNotificationModule();
 
 //Infrastructure
-builder.Services.AddProviders(builder.Configuration);
+builder.Services.AddDataProviders();
 builder.Services.AddRepositories();
 
 
@@ -35,6 +42,8 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
+
+app.UseMiddleware<ErrorHandlerMiddleware>();
 
 app.UseHttpsRedirection();
 

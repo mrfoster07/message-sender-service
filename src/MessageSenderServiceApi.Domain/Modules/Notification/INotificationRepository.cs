@@ -1,10 +1,7 @@
-﻿using MessageSenderServiceApi.Domain.Modules.Notification.Entities;
-
-namespace MessageSenderServiceApi.Domain.Modules.Notification;
+﻿namespace MessageSenderServiceApi.Domain.Modules.Notification;
 
 public interface INotificationRepository
 {
-    Task Add(NotificationEntity entity);
-    Task UpdateStatus(Guid id, bool status);
-    Task<bool> HasStatus(Guid id, bool status);
+    Task Add((Guid id, string json, string jsonHash, bool status) item, CancellationToken cancellationToken);
+    Task<bool> IsStatus(Guid id, bool status, CancellationToken cancellationToken);
 }

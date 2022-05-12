@@ -13,7 +13,15 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MessageSenderServiceApi.Inf
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MessageSenderServiceApi.Tests", "src\MessageSenderServiceApi.Tests\MessageSenderServiceApi.Tests.csproj", "{CC2327E6-EB55-4DF6-957B-AB95191609A3}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MessageSenderServiceApi.Packages", "src\MessageSenderServiceApi.Packages\MessageSenderServiceApi.Packages.csproj", "{3F7074C9-6BD1-47CD-8BBA-7C2D234E1767}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MessageSenderServiceApi.Packages", "src\MessageSenderServiceApi.Packages\MessageSenderServiceApi.Packages.csproj", "{3F7074C9-6BD1-47CD-8BBA-7C2D234E1767}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "NotificationSenders", "NotificationSenders", "{E51A98D0-68E1-423B-9471-F2478E5307DB}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NotificationSender", "src\NotificationSenders\NotificationSender\NotificationSender.csproj", "{E7BD0A4C-5B9A-4454-A034-EDC107B8828B}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NotificationSender.IosProvider", "src\NotificationSenders\NotificationSender.IosProvider\NotificationSender.IosProvider.csproj", "{BF32D2EC-0B7F-4ABD-B353-505656C886C8}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NotificationSender.AndroidProvider", "src\NotificationSenders\NotificationSender.AndroidProvider\NotificationSender.AndroidProvider.csproj", "{C504BB71-260D-4128-BD3C-1ED840EC011C}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -45,9 +53,26 @@ Global
 		{3F7074C9-6BD1-47CD-8BBA-7C2D234E1767}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{3F7074C9-6BD1-47CD-8BBA-7C2D234E1767}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{3F7074C9-6BD1-47CD-8BBA-7C2D234E1767}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E7BD0A4C-5B9A-4454-A034-EDC107B8828B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E7BD0A4C-5B9A-4454-A034-EDC107B8828B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E7BD0A4C-5B9A-4454-A034-EDC107B8828B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E7BD0A4C-5B9A-4454-A034-EDC107B8828B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BF32D2EC-0B7F-4ABD-B353-505656C886C8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BF32D2EC-0B7F-4ABD-B353-505656C886C8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BF32D2EC-0B7F-4ABD-B353-505656C886C8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BF32D2EC-0B7F-4ABD-B353-505656C886C8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C504BB71-260D-4128-BD3C-1ED840EC011C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C504BB71-260D-4128-BD3C-1ED840EC011C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C504BB71-260D-4128-BD3C-1ED840EC011C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C504BB71-260D-4128-BD3C-1ED840EC011C}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{E7BD0A4C-5B9A-4454-A034-EDC107B8828B} = {E51A98D0-68E1-423B-9471-F2478E5307DB}
+		{BF32D2EC-0B7F-4ABD-B353-505656C886C8} = {E51A98D0-68E1-423B-9471-F2478E5307DB}
+		{C504BB71-260D-4128-BD3C-1ED840EC011C} = {E51A98D0-68E1-423B-9471-F2478E5307DB}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {F41BDA05-7429-4304-83CE-C8CFEC6EF0C8}

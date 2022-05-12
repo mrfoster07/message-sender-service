@@ -7,10 +7,14 @@ namespace MessageSenderServiceApi.Infrastructure.Extensions.DI
 {
     public static class DataProvidersDiExtension
     {
-        public static IServiceCollection AddProviders(this IServiceCollection serviceCollection,
-            IConfigurationBuilder configuration)
+        public static IServiceCollection AddDataProviders(this IServiceCollection serviceCollection)
         {
-            serviceCollection.AddDbContext<NotificationDataContext>(opt => opt.UseInMemoryDatabase("NotificationDB"));
+            serviceCollection.AddDbContext<NotificationDataContext>(
+                opt =>
+                    opt.UseInMemoryDatabase("NotificationDB"),
+                ServiceLifetime.Transient,
+                ServiceLifetime.Transient);
+
             return serviceCollection;
         }
     }
