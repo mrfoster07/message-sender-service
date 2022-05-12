@@ -82,12 +82,15 @@ namespace NotificationSender.AndroidProvider
             watch.Stop();
             var threadIdEnd = Thread.CurrentThread.ManagedThreadId;
 
-            logger.LogDebug("{message}", new
+            if (logger.IsEnabled(LogLevel.Information))
             {
-                @message =
-                    $"ThreadId-Begin: {threadIdBegin}. ThreadId-End: {threadIdEnd}. Execution Time: {watch.ElapsedMilliseconds} ms.",
-                @model = JsonSerializer.Serialize(model)
-            });
+                logger.LogInformation($"ResetIndex is {resetIndex}/{resetValue}. Execution Time: {watch.ElapsedMilliseconds} ms.");
+            }
+
+            if (logger.IsEnabled(LogLevel.Debug))
+            {
+                logger.LogDebug($"ThreadId-Begin: {threadIdBegin}. ThreadId-End: {threadIdEnd}. {JsonSerializer.Serialize(model)}");
+            }
 
             return true;
         }

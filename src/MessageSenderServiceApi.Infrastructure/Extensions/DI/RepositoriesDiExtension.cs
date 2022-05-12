@@ -9,7 +9,6 @@ namespace MessageSenderServiceApi.Infrastructure.Extensions.DI
         public static IServiceCollection AddRepositories(this IServiceCollection serviceCollection)
         {
             serviceCollection.AddScoped<INotificationRepository, NotificationRepository>();
-            serviceCollection.AddTransient<INotificationDumpRepository, NotificationDumpRepository>();
 
             return serviceCollection;
         }

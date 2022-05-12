@@ -1,5 +1,4 @@
 using MessageSenderServiceApi.Domain.Modules.Notification.Extensions;
-using MessageSenderServiceApi.Infrastructure.Extensions;
 using MessageSenderServiceApi.Infrastructure.Extensions.DI;
 using MessageSenderServiceApi.Middleware;
 using Serilog;
@@ -21,20 +20,18 @@ Log.Logger = new LoggerConfiguration()
 
 builder.Host.UseSerilog();
 
-//builder.Host.UseSerilog(
-//    (ctx, lc) => lc
-//        .WriteTo.Console());
-
 //Domain
 builder.Services.AddNotificationModule();
 
 //Infrastructure
-builder.Services.AddDataProviders();
+builder.Services.AddDataProviders(builder.Configuration);
 builder.Services.AddRepositories();
 
 
 //App
 var app = builder.Build();
+
+app.RunMigrationsIfNeeds(app.Configuration);
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
@@ -44,8 +41,6 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseMiddleware<ErrorHandlerMiddleware>();
-
-app.UseHttpsRedirection();
 
 app.MapHealthChecks("/health");
 

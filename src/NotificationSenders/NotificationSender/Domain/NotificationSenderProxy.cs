@@ -1,10 +1,12 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
+using NotificationSender.Models;
 
 namespace NotificationSender.Domain
 {
     public interface INotificationSenderProxy
     {
-        Task<bool> ProcessNotification(string senderTitle, IDictionary<string, string> parameters);
+        Task<NotificationSenderResultModel> ProcessNotification(string senderTitle,
+            IDictionary<string, string> parameters);
     }
 
     public sealed class NotificationSenderProxy : INotificationSenderProxy
@@ -20,7 +22,8 @@ namespace NotificationSender.Domain
             _proxySenders = proxySenders;
         }
 
-        public async Task<bool> ProcessNotification(string senderTitle, IDictionary<string, string> parameters)
+        public async Task<NotificationSenderResultModel> ProcessNotification(string senderTitle,
+            IDictionary<string, string> parameters)
         {
             if (_proxySenders.NotificationSenders.TryGetValue(senderTitle, out var senderType))
             {
@@ -30,7 +33,7 @@ namespace NotificationSender.Domain
                 }
             }
 
-            return false;
+            return new NotificationSenderResultModel();
         }
     }
 }

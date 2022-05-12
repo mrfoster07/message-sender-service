@@ -1,10 +1,11 @@
 ﻿using NotificationSender.Domain;
+using NotificationSender.Models;
 
 namespace NotificationSender.IosProvider
 {
     public interface INotificationSenderIosFacade
     {
-        Task<bool> ProcessNotification(IDictionary<string, string> parameters);
+        Task<NotificationSenderResultModel> ProcessNotification(IDictionary<string, string> parameters);
     }
 
     [NotificationSenderTitle("iOS")]
@@ -17,15 +18,20 @@ namespace NotificationSender.IosProvider
             this.provider = provider;
         }
 
-        public async Task<bool> ProcessNotification(IDictionary<string, string> parameters)
+        public async Task<NotificationSenderResultModel> ProcessNotification(IDictionary<string, string> parameters)
         {
+            var result = new NotificationSenderResultModel();
+
             var parsedModel = provider.ParseModel(parameters);
-            if (provider.ValidateModel(parsedModel))
+
+            result.IsValid = provider.ValidateModel(parsedModel);
+
+            if (result.IsValid)
             {
-                return await provider.ProcessNotification(parsedModel);
+                result.IsDelivered = await provider.ProcessNotification(parsedModel);
             }
 
-            return false;
+            return result;
         }
     }
 }

@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.Logging;
+﻿using System.Text.Json;
+using Microsoft.Extensions.Logging;
 using NotificationSender.Domain;
 
 namespace NotificationSender.IosProvider
@@ -19,7 +20,7 @@ namespace NotificationSender.IosProvider
         {
             this.logger = logger;
         }
-        
+
         private static int resetIndex = 0;
 
         private const int resetValue = 5;
@@ -63,7 +64,7 @@ namespace NotificationSender.IosProvider
 
         public async Task<bool> ProcessNotification(IosNotificationModel model)
         {
-            if (resetValue == Interlocked.Increment(ref resetIndex) 
+            if (resetValue == Interlocked.Increment(ref resetIndex)
                 && resetValue == Interlocked.Exchange(ref resetIndex, 0))
             {
                 return false;
@@ -76,8 +77,15 @@ namespace NotificationSender.IosProvider
             watch.Stop();
             var threadIdEnd = Thread.CurrentThread.ManagedThreadId;
 
-            logger.LogDebug(
-                $"ThreadId-Begin: {threadIdBegin}. ThreadId-End: {threadIdEnd}. Execution Time: {watch.ElapsedMilliseconds} ms.");
+            if (logger.IsEnabled(LogLevel.Information))
+            {
+                logger.LogInformation($"ResetIndex is {resetIndex}/{resetValue}. Execution Time: {watch.ElapsedMilliseconds} ms.");
+            }
+
+            if (logger.IsEnabled(LogLevel.Debug))
+            {
+                logger.LogDebug($"ThreadId-Begin: {threadIdBegin}. ThreadId-End: {threadIdEnd}. {JsonSerializer.Serialize(model)}");
+            }
 
             return true;
         }

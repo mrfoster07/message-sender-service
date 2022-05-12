@@ -7,10 +7,10 @@ EXPOSE 443
 
 FROM mcr.microsoft.com/dotnet/sdk:6.0 AS build
 WORKDIR /src
-COPY ["MessageSenderServiceApi/MessageSenderServiceApi.csproj", "MessageSenderServiceApi/"]
-RUN dotnet restore "MessageSenderServiceApi/MessageSenderServiceApi.csproj"
+COPY ["src/MessageSenderServiceApi/MessageSenderServiceApi.csproj", "src/MessageSenderServiceApi/"]
+RUN dotnet restore "src/MessageSenderServiceApi/MessageSenderServiceApi.csproj"
 COPY . .
-WORKDIR "/src/MessageSenderServiceApi"
+WORKDIR "/src/src/MessageSenderServiceApi"
 RUN dotnet build "MessageSenderServiceApi.csproj" -c Release -o /app/build
 
 FROM build AS publish

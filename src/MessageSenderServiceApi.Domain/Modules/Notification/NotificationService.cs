@@ -1,7 +1,6 @@
 ﻿using System.Text.Json;
 using MessageSenderServiceApi.Contracts.Notification;
 using MessageSenderServiceApi.Domain.Helpers;
-using MessageSenderServiceApi.Domain.Modules.Notification.Dto;
 using MessageSenderServiceApi.Domain.Modules.Notification.Helpers;
 using Microsoft.Extensions.Logging;
 using NotificationSender.Domain;
@@ -20,54 +19,46 @@ public interface INotificationService
 
 public class NotificationService : INotificationService
 {
-    private readonly ILogger<NotificationService> _logger;
+    private readonly ILogger<NotificationService> logger;
 
-    private readonly INotificationRepository _repository;
+    private readonly INotificationRepository repository;
 
-    private readonly INotificationDumpingService _notificationDumpingService;
-    private readonly INotificationSenderProxy _notificationSenderProxy;
+    private readonly INotificationSenderProxy notificationSenderProxy;
 
     public NotificationService(
         ILogger<NotificationService> logger,
         INotificationRepository repository,
-        INotificationDumpingService notificationDumpingService,
         INotificationSenderProxy notificationSenderProxy)
     {
-        _logger = logger;
-        _repository = repository;
-        _notificationDumpingService = notificationDumpingService;
-        _notificationSenderProxy = notificationSenderProxy;
+        this.logger = logger;
+        this.repository = repository;
+        this.notificationSenderProxy = notificationSenderProxy;
     }
 
 
-    //CancellationToken  - при отправке нужно не дожидаться, он не нужен. А при получении необходим.
-    //Validation - нужно все перепроверить
-    //репозитории
-    //отладка
-
-
-    /// <summary>
-    /// По условию нет необходимости фильтровать дубликаты,
-    /// производится рассылка всех без исключения нотификаций,
-    /// а прочесс сохранения сообщения и результата его выполнение произфодится в паралельной задаче.
-    ///
-    /// если есть проблема с СУБД, нужно перестать вынимать сообщения из очереди
-    /// </summary>
-    /// <param name="model"></param>
-    /// <param name="cancellationToken"></param>
-    /// <returns></returns>в
-    /// 
     public async Task<NotificationCreateResultModel> CreateNotification(NotificationCreateModel model)
     {
         var result = new NotificationCreateResultModel();
+
+        if (string.IsNullOrEmpty(model.TargetType) || model.Parameters.Count == 0)
+        {
+            result.Status =
+                NotificationStatusParseHelper.GetStatusMessage(false);
+            return result;
+        }
+
         result.Id = Guid.NewGuid();
 
-        var isDelivered = await _notificationSenderProxy.ProcessNotification(model.TargetType, model.Parameters);
-        result.Status =
-            NotificationStatusParseHelper.GetStatusMessage(isDelivered);
+        var notificationResult =
+            await notificationSenderProxy.ProcessNotification(model.TargetType, model.Parameters);
 
-        _notificationDumpingService.AddParallel(result.Id, isDelivered, model);
-        // await Add(result.Id, isDelivered, model);
+        if (notificationResult.IsValid)
+        {
+            await SaveNotificationWithResult(result.Id, notificationResult.IsDelivered, model);
+        }
+
+        result.Status =
+            NotificationStatusParseHelper.GetStatusMessage(notificationResult.IsDelivered);
 
         return result;
     }
@@ -78,20 +69,29 @@ public class NotificationService : INotificationService
     {
         var result = new NotificationStatusModel();
 
-        var isDelivered = await _repository.IsStatus(id, true, cancellationToken);
+        if (id == Guid.Empty)
+        {
+            result.Status =
+                NotificationStatusParseHelper.GetStatusMessage(false);
+            return result;
+        }
+
+        var isDelivered = await repository.IsStatus(id, true, cancellationToken);
         result.Status =
             NotificationStatusParseHelper.GetStatusMessage(isDelivered);
 
         return result;
     }
 
-    private async Task Add(Guid notificationId, bool notificationIsDelivered,
+    private async Task SaveNotificationWithResult(
+        Guid notificationId,
+        bool notificationIsDelivered,
         NotificationCreateModel bodyModel)
     {
         var json = JsonSerializer.Serialize(bodyModel);
         var hashedJsonString = StringHashHelper.GetStringHash(json);
 
-        await _repository.Add(
+        await repository.Add(
             (notificationId,
                 json,
                 hashedJsonString,

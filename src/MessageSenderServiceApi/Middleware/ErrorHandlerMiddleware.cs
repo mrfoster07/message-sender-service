@@ -6,10 +6,12 @@ namespace MessageSenderServiceApi.Middleware;
 public class ErrorHandlerMiddleware
 {
     private readonly RequestDelegate _next;
+    private readonly ILogger<ErrorHandlerMiddleware> logger;
 
-    public ErrorHandlerMiddleware(RequestDelegate next)
+    public ErrorHandlerMiddleware(RequestDelegate next, ILogger<ErrorHandlerMiddleware> logger)
     {
         _next = next;
+        this.logger = logger;
     }
 
     public async Task Invoke(HttpContext context)
@@ -21,6 +23,8 @@ public class ErrorHandlerMiddleware
         {
             var response = context.Response;
             response.ContentType = "application/json";
+
+            logger.LogError(error.ToString());
 
             switch (error)
             {

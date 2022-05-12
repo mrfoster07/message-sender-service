@@ -15,7 +15,6 @@ namespace MessageSenderServiceApi.Domain.Modules.Notification.Extensions
     {
         public static IServiceCollection AddNotificationModule(this IServiceCollection serviceCollection)
         {
-            serviceCollection.AddSingleton<INotificationDumpingService, NotificationDumpingService>();
             serviceCollection.AddScoped<INotificationService, NotificationService>();
 
             serviceCollection.AddNotificationSenders(
