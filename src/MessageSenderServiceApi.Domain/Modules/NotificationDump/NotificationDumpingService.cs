@@ -46,7 +46,6 @@ namespace MessageSenderServiceApi.Domain.Modules.NotificationDump
 
         public void AddParallel(Guid notificationId, bool notificationIsDelivered, NotificationCreateModel bodyModel)
         {
-            //Math.Abs(notificationId.GetHashCode() % notificationDumpTaskNumber)
             notificationBags[CurrentTaskIndex].Add(
                 new NotificationCreateEventModel
                 {
