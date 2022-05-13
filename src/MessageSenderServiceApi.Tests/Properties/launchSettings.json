@@ -1,0 +1,10 @@
+{
+  "profiles": {
+    "MessageSenderServiceApi.Tests": {
+      "commandName": "Project"
+    },
+    "Docker": {
+      "commandName": "Docker"
+    }
+  }
+}
