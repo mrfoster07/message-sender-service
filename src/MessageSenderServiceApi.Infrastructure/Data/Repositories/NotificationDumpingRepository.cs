@@ -11,11 +11,11 @@ using Microsoft.EntityFrameworkCore;
 
 namespace MessageSenderServiceApi.Infrastructure.Data.Repositories
 {
-    public class NotificationDumpRepository : INotificationDumpingRepository
+    public class NotificationDumpingRepository : INotificationDumpingRepository
     {
         private readonly NotificationDataContext dataContext;
 
-        public NotificationDumpRepository(NotificationDataContext dataContext)
+        public NotificationDumpingRepository(NotificationDataContext dataContext)
         {
             this.dataContext = dataContext;
         }
