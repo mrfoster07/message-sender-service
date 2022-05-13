@@ -110,10 +110,10 @@ API приложения предоставляет:
 
 #### Инструменты:
 
-Платформа .NET 6
-Библиотеки логирования - Serilog
-Библиотеки тестирование - XUnit, Moq, FluentAssertions
-ORM - EF
+- Платформа .NET 6
+- Библиотеки логирования - Serilog
+- Библиотеки тестирование - XUnit, Moq, FluentAssertions
+- ORM - EF
 
 
 В качестве хранилища данных "InMemoryDatabase" / "Postgres",

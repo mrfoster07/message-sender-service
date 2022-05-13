@@ -8,8 +8,11 @@ using FluentAssertions;
 using MessageSenderServiceApi.Contracts.Notification;
 using MessageSenderServiceApi.Domain.Helpers;
 using MessageSenderServiceApi.Domain.Modules.Notification;
+using MessageSenderServiceApi.Domain.Modules.Notification.Models;
+using MessageSenderServiceApi.Domain.Modules.NotificationDump;
 using MessageSenderServiceApi.Domain.Providers;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 using Moq;
 using NotificationSender.Domain;
 using NotificationSender.Models;
@@ -24,6 +27,8 @@ namespace MessageSenderServiceApi.Tests.Modules.Notification.NotificationService
         private readonly Mock<INotificationSenderProxy> notificationSenderProxyMock;
         private readonly Mock<IGuidProvider> guidProviderMock;
         private readonly Mock<IStringHashHelper> stringHashHelperMock;
+        private readonly Mock<INotificationDumpingService> notificationDumpingServiceMock;
+        private readonly Mock<IOptions<NotificationDumpingSettings>> notificationDumpingSettingsMock;
 
 
         private readonly Domain.Modules.Notification.NotificationService notificationService;
@@ -38,13 +43,18 @@ namespace MessageSenderServiceApi.Tests.Modules.Notification.NotificationService
             this.notificationSenderProxyMock = new Mock<INotificationSenderProxy>();
             this.guidProviderMock = new Mock<IGuidProvider>();
             this.stringHashHelperMock = new Mock<IStringHashHelper>();
+            this.notificationDumpingServiceMock = new Mock<INotificationDumpingService>();
+            notificationDumpingSettingsMock.Setup(s => s.Value)
+                .Returns(new NotificationDumpingSettings());
 
             notificationService = new Domain.Modules.Notification.NotificationService(
                 loggerMock.Object,
                 notificationRepositoryMock.Object,
                 notificationSenderProxyMock.Object,
                 guidProviderMock.Object,
-                stringHashHelperMock.Object);
+                stringHashHelperMock.Object,
+                notificationDumpingServiceMock.Object,
+                notificationDumpingSettingsMock.Object);
         }
 
 

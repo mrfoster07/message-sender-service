@@ -22,14 +22,13 @@ Log.Logger = new LoggerConfiguration()
 builder.Host.UseSerilog();
 
 //Domain
-builder.Services.AddNotificationModule();
+builder.Services.AddNotificationModule(builder.Configuration);
 
 //Infrastructure
 builder.Services.AddHelpers();
 builder.Services.AddValueProviders();
 builder.Services.AddDataProviders(builder.Configuration);
 builder.Services.AddRepositories();
-
 
 //App
 var app = builder.Build();

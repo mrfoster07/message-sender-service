@@ -2,8 +2,11 @@
 using MessageSenderServiceApi.Contracts.Notification;
 using MessageSenderServiceApi.Domain.Helpers;
 using MessageSenderServiceApi.Domain.Modules.Notification.Helpers;
+using MessageSenderServiceApi.Domain.Modules.Notification.Models;
+using MessageSenderServiceApi.Domain.Modules.NotificationDump;
 using MessageSenderServiceApi.Domain.Providers;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 using NotificationSender.Domain;
 
 namespace MessageSenderServiceApi.Domain.Modules.Notification;
@@ -32,18 +35,26 @@ public class NotificationService : INotificationService
 
     private readonly IStringHashHelper stringHashHelper;
 
+    private readonly INotificationDumpingService notificationDumpingService;
+
+    private readonly bool isDumpEnabled;
+
     public NotificationService(
         ILogger<NotificationService> logger,
         INotificationRepository repository,
         INotificationSenderProxy notificationSenderProxy,
         IGuidProvider guidProvider,
-        IStringHashHelper stringHashHelper)
+        IStringHashHelper stringHashHelper,
+        INotificationDumpingService notificationDumpingService,
+        IOptions<NotificationDumpingSettings> notificationDumpingSettings)
     {
         this.logger = logger;
         this.repository = repository;
         this.notificationSenderProxy = notificationSenderProxy;
         this.guidProvider = guidProvider;
         this.stringHashHelper = stringHashHelper;
+        this.notificationDumpingService = notificationDumpingService;
+        this.isDumpEnabled = notificationDumpingSettings.Value.SaveInBatch;
     }
 
 
@@ -67,7 +78,13 @@ public class NotificationService : INotificationService
 
         if (notificationResult.IsValid)
         {
-            await SaveNotificationWithResult(result.Id, notificationResult.IsDelivered, model);
+            if (isDumpEnabled)
+            {
+                notificationDumpingService.AddParallel(result.Id, notificationResult.IsDelivered, model);
+            } else
+            {
+                await SaveNotificationWithResult(result.Id, notificationResult.IsDelivered, model);
+            }
         }
 
         result.Status =
