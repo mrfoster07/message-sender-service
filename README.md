@@ -48,7 +48,7 @@ API приложения предоставляет:
 
 #### Формат запросов и ответов:
 
-###### + Для iOS устройств:
+###### + Создание нотификации для iOS устройств:
 
     Request:
 
@@ -73,11 +73,11 @@ API приложения предоставляет:
     
 
 
-###### + Для Android устройств:
+###### + Создание нотификации для Android устройств:
     
     Request:
 
-    GET /api/v1/notifications/:id/status
+    POST /api/v1/notifications   
 
     {
         "TargetType": "Android",
@@ -88,6 +88,19 @@ API приложения предоставляет:
             "Condition": "Condition Text"
         }
     }
+
+    Response:
+
+    {
+        "id": "512dea8a-3a79-45c5-a70b-625c1561c61e",
+        "status": "Доставлено"
+    }
+
+###### + Получение статуса нотификации:
+    
+    Request:
+
+    GET /api/v1/notifications/:id/status
 
     Response:
 
