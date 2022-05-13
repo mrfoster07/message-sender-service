@@ -19,11 +19,11 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\MessageSenderServiceApi.Infrastructure\MessageSenderServiceApi.Infrastructure.csproj" />
+    <InternalsVisibleTo Include="MessageSenderServiceApi.Tests.Integration" />
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Middleware\" />
+    <ProjectReference Include="..\MessageSenderServiceApi.Infrastructure\MessageSenderServiceApi.Infrastructure.csproj" />
   </ItemGroup>
 
 </Project>

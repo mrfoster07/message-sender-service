@@ -1,4 +1,6 @@
-﻿using Microsoft.Extensions.DependencyInjection;
+﻿using System.Text.Json;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 using NotificationSender.Models;
 
 namespace NotificationSender.Domain
@@ -13,11 +15,14 @@ namespace NotificationSender.Domain
     {
         private readonly ProxySendersModel _proxySenders;
         private readonly IServiceProvider _serviceProvider;
+        private readonly ILogger<NotificationSenderProxy> logger;
 
         public NotificationSenderProxy(
+            ILogger<NotificationSenderProxy> logger,
             IServiceProvider serviceProvider,
             ProxySendersModel proxySenders)
         {
+            this.logger = logger;
             _serviceProvider = serviceProvider;
             _proxySenders = proxySenders;
         }
@@ -29,7 +34,15 @@ namespace NotificationSender.Domain
             {
                 if (_serviceProvider.GetRequiredService(senderType) is INotificationSenderFacade sender)
                 {
-                    return await sender.ProcessNotification(parameters);
+                    var result = await sender.ProcessNotification(parameters);
+
+                    if (logger.IsEnabled(LogLevel.Information))
+                    {
+                        logger.LogInformation(
+                            $"Sender title: {senderTitle}. Notification: {JsonSerializer.Serialize(parameters)}. IsValid: {result.IsValid} IsDelivered: {result.IsDelivered}.");
+                    }
+
+                    return result;
                 }
             }
 

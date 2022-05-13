@@ -1,6 +1,7 @@
 using MessageSenderServiceApi.Domain.Modules.Notification.Extensions;
+using MessageSenderServiceApi.Infrastructure.Extensions;
 using MessageSenderServiceApi.Infrastructure.Extensions.DI;
-using MessageSenderServiceApi.Middleware;
+using MessageSenderServiceApi.Infrastructure.Middleware;
 using Serilog;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -24,6 +25,8 @@ builder.Host.UseSerilog();
 builder.Services.AddNotificationModule();
 
 //Infrastructure
+builder.Services.AddHelpers();
+builder.Services.AddValueProviders();
 builder.Services.AddDataProviders(builder.Configuration);
 builder.Services.AddRepositories();
 
@@ -47,3 +50,11 @@ app.MapHealthChecks("/health");
 app.MapControllers();
 
 app.Run();
+
+namespace MessageSenderServiceApi
+{
+    public partial class Program
+    {
+
+    }
+}

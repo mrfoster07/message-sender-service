@@ -84,7 +84,7 @@ namespace NotificationSender.IosProvider
 
             if (logger.IsEnabled(LogLevel.Debug))
             {
-                logger.LogDebug($"ThreadId-Begin: {threadIdBegin}. ThreadId-End: {threadIdEnd}. {JsonSerializer.Serialize(model)}");
+                logger.LogDebug($"ThreadId-Begin: {threadIdBegin}. ThreadId-End: {threadIdEnd}. Model: {JsonSerializer.Serialize(model)}");
             }
 
             return true;

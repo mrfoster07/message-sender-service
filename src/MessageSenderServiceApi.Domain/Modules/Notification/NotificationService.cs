@@ -2,6 +2,7 @@
 using MessageSenderServiceApi.Contracts.Notification;
 using MessageSenderServiceApi.Domain.Helpers;
 using MessageSenderServiceApi.Domain.Modules.Notification.Helpers;
+using MessageSenderServiceApi.Domain.Providers;
 using Microsoft.Extensions.Logging;
 using NotificationSender.Domain;
 
@@ -19,20 +20,30 @@ public interface INotificationService
 
 public class NotificationService : INotificationService
 {
+    private const int maxNotificationCreateModelSize = 100;
+
     private readonly ILogger<NotificationService> logger;
 
     private readonly INotificationRepository repository;
 
     private readonly INotificationSenderProxy notificationSenderProxy;
 
+    private readonly IGuidProvider guidProvider;
+
+    private readonly IStringHashHelper stringHashHelper;
+
     public NotificationService(
         ILogger<NotificationService> logger,
         INotificationRepository repository,
-        INotificationSenderProxy notificationSenderProxy)
+        INotificationSenderProxy notificationSenderProxy,
+        IGuidProvider guidProvider,
+        IStringHashHelper stringHashHelper)
     {
         this.logger = logger;
         this.repository = repository;
         this.notificationSenderProxy = notificationSenderProxy;
+        this.guidProvider = guidProvider;
+        this.stringHashHelper = stringHashHelper;
     }
 
 
@@ -40,14 +51,16 @@ public class NotificationService : INotificationService
     {
         var result = new NotificationCreateResultModel();
 
-        if (string.IsNullOrEmpty(model.TargetType) || model.Parameters.Count == 0)
+        if (string.IsNullOrEmpty(model.TargetType)
+            || model.Parameters.Count == 0
+            || model.Parameters.Count > maxNotificationCreateModelSize)
         {
             result.Status =
                 NotificationStatusParseHelper.GetStatusMessage(false);
             return result;
         }
 
-        result.Id = Guid.NewGuid();
+        result.Id = guidProvider.CreateGuid();
 
         var notificationResult =
             await notificationSenderProxy.ProcessNotification(model.TargetType, model.Parameters);
@@ -89,7 +102,7 @@ public class NotificationService : INotificationService
         NotificationCreateModel bodyModel)
     {
         var json = JsonSerializer.Serialize(bodyModel);
-        var hashedJsonString = StringHashHelper.GetStringHash(json);
+        var hashedJsonString = stringHashHelper.GetStringHashSHA512(json);
 
         await repository.Add(
             (notificationId,
